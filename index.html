@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaqueline, Onde o Amor Vira Eternidade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {--fundo-noite: #020617; --cor-clara: #f1f5f9; --cor-destaque: #38bdf8; } 
+        body {margin: 0; padding: 0; background: var(--fundo-noite); font-family: "Georgia", serif; color: var(--cor-clara); line-height: 1.6;} 
+        #stars {position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;} 
+        .container {position: relative; z-index: 2; max-width: 900px; margin: 70px auto; padding: 20px; text-align: center;} 
+        h1 {font-size: 3rem; margin-bottom: 10px; color: #e2e8f0; text-shadow: 0 0 15px var(--cor-destaque);} 
+        #time-counter {font-size: 1.1rem; color: #ffcc00; margin-bottom: 40px; text-shadow: 0 0 8px rgba(255, 204, 0, 0.5); font-weight: bold;} 
+        .texto {line-height: 1.7; font-size: 1.25rem; margin-bottom: 40px; text-shadow: 0 0 10px #0ea5e9; white-space: pre-wrap;} 
+        .assinatura {font-size: 1.5rem; margin-top: 20px; opacity: 0.9;} 
+        .nav-link {display: inline-block; margin: 15px 10px; font-size: 1.1rem; color: var(--cor-destaque); text-decoration: none; text-shadow: 0 0 10px var(--cor-destaque); padding: 8px 15px; border: 2px solid var(--cor-destaque); border-radius: 8px; transition: background-color 0.3s;}
+        .nav-link:hover {background-color: rgba(56, 189, 248, 0.1);}
+        #music-prompt { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        #music-button { background: #38bdf8; color: var(--fundo-noite); border: none; padding: 15px 30px; font-size: 1.3rem; border-radius: 5px; cursor: pointer; transition: background 0.3s; margin-top: 20px; }
+        #music-button:hover { background: #0ea5e9; }
+        @media (max-width: 600px) { 
+            .container { margin: 40px auto; } h1 { font-size: 2.2rem; } .texto { font-size: 1rem; } 
+            .nav-link { font-size: 1rem; margin: 10px 5px; }
+            #time-counter { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    
+    <audio id="background-music" loop>
+        <source src="velhainfancia.mp3" type="audio/mpeg">
+    </audio>
+
+    <canvas id="stars"></canvas>
+
+    <div id="music-prompt" style="display: none;">
+        <h2 style="color: #ffcc00; text-shadow: 0 0 10px #ffcc00;">Clique para Iniciar Nossa Música</h2>
+        <p>A música continuará tocando e de onde parou em todas as páginas.</p>
+        <button id="music-button" onclick="startMusic()">Tocar a Trilha Sonora da Nossa História</button>
+    </div>
+
+    <div class="container">
+        <h1>Jaqueline, você é a minha história</h1>
+        <div id="time-counter"></div>
+
+        <p class="texto" id="typewriter-text">
+            Se um dia você olhar para o céu e sentir saudade,
+            lembra que eu sempre estive aqui,
+            mesmo quando a vida fez a gente se perder por um instante.
+            ...
+        </p>
+
+        <nav>
+            <a class="nav-link" href="secret.html">🤫 Segredo Nosso</a>
+            <a class="nav-link" href="juramento.html">👑 Meu Juramento</a>
+            <a class="nav-link" href="caixa-surpresa.html">🎁 Cápsula do Tempo</a>
+        </nav>
+
+        <div class="assinatura">
+            — Vinícius
+        </div>
+    </div>
+
+    <script>
+        // PERSISTÊNCIA DA MÚSICA E INTERAÇÃO
+        const audioPlayer = document.getElementById('background-music');
+        const lastTime = localStorage.getItem('musicTime');
+        if (lastTime) { audioPlayer.currentTime = parseFloat(lastTime); }
+        window.addEventListener('beforeunload', () => { localStorage.setItem('musicTime', audioPlayer.currentTime); });
+        audioPlayer.play().catch(error => { const musicPrompt = document.getElementById('music-prompt'); if(musicPrompt) musicPrompt.style.display = 'flex'; });
+        function startMusic() {
+            audioPlayer.play().then(() => {
+                const musicPrompt = document.getElementById('music-prompt');
+                if(musicPrompt) musicPrompt.style.display = 'none';
+            }).catch(e => console.log('Música ainda bloqueada.'));
+        }
+
+        // ANIMAÇÃO DE ESTRELAS
+        const canvas = document.getElementById("stars");
+        const ctx = canvas.getContext("2d");
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize(); window.onresize = resize;
+        let stars = [];
+        for (let i = 0; i < 200; i++) { stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2, speed: Math.random() * 0.5 + 0.2 }); }
+        function draw() { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "white"; stars.forEach(star => { ctx.beginPath(); ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2); ctx.fill(); star.y += star.speed; if (star.y > canvas.height) { star.y = 0; star.x = Math.random() * canvas.width; } }); requestAnimationFrame(draw); }
+        draw();
+
+        // FUNÇÃO CONTADOR DE TEMPO
+        const startDate = new Date('Novembro 07, 2025 14:25:00').getTime(); 
+        function updateTimeCounter() {
+            const now = new Date().getTime(); const distance = now - startDate;
+            if (distance < 0) { document.getElementById('time-counter').innerHTML = "Nossa história está prestes a começar!"; return; }
+            const seconds = Math.floor(distance / 1000); const minutes = Math.floor(seconds / 60); const hours = Math.floor(minutes / 60); const days = Math.floor(hours / 24); const years = Math.floor(days / 365.25);
+            const remainingDays = Math.floor(days % 365.25);
+            document.getElementById('time-counter').innerHTML = 
+                `Nossa história está sendo escrita há: <br>` +
+                `${years} anos, ${remainingDays} dias, ${hours % 24} horas, ${minutes % 60} minutos e ${seconds % 60} segundos.`;
+        }
+        setInterval(updateTimeCounter, 1000); updateTimeCounter(); 
+
+        // EFEITO MÁQUINA DE ESCREVER
+        const fullTextElement = document.getElementById('typewriter-text');
+        const fullText = fullTextElement.innerText;
+        fullTextElement.innerText = '';
+        let charIndex = 0;
+        const typingSpeed = 30;
+        function typeWriter() {
+            if (charIndex < fullText.length) {
+                fullTextElement.innerText += fullText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            }
+        }
+        setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>
